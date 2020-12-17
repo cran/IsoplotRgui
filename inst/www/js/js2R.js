@@ -87,7 +87,7 @@ function getOptions(prefs){
 	    }
 	    if (gcsettings.cutoffdisc!=0){
 		var opt = gcsettings.discoption;
-		out += ",cutoff.disc=discfilter(" +
+		out += ",cutoff.disc=IsoplotR::discfilter(" +
 		    "option=" + opt + "," +
 		    "cutoff=c(" + gcsettings.mindisc[opt-1] +
 		    "," + gcsettings.maxdisc[opt-1] + "),";
@@ -173,7 +173,7 @@ function getOptions(prefs){
 	    }
 	    if (gcsettings.cutoffdisc!=0){
 		var opt = gcsettings.discoption;
-		out += ",cutoff.disc=discfilter(" +
+		out += ",cutoff.disc=IsoplotR::discfilter(" +
 		    "option=" + opt + "," +
 		    "cutoff=c(" + gcsettings.mindisc[opt-1] +
 		    "," + gcsettings.maxdisc[opt-1] + "),";
@@ -251,7 +251,7 @@ function getOptions(prefs){
 	    }
 	    if (gcsettings.cutoffdisc!=0){
 		var opt = gcsettings.discoption;
-		out += ",cutoff.disc=discfilter(" +
+		out += ",cutoff.disc=IsoplotR::discfilter(" +
 		    "option=" + opt + "," +
 		    "cutoff=c(" + gcsettings.mindisc[opt-1] +
 		    "," + gcsettings.maxdisc[opt-1] + "),";
@@ -267,13 +267,13 @@ function getOptions(prefs){
 	case 'detritals':
 	    out += ",samebandwidth=" + pdsettings.samebandwidth;
 	    out += ",normalise=" + pdsettings.normalise;
-	    if (pdsettings.pchdetritals!='none') {
-		out += ",pch=" + pdsettings.pchdetritals; }
 	    break;
 	default:
 	}
-	if (geochronometer!="detritals" & pdsettings.pch!='none'){
-	    out += ",pch=" + pdsettings.pch;
+	if (geochronometer=="detritals"){
+	    out += ",rug=" + pdsettings.rugdetritals;
+	} else {
+	    out += ",rug=" + pdsettings.rug;
 	}
 	out += ",log=" + pdsettings.log;
 	if (pdsettings.binwidth != 'auto') { out += ",binwidth=" + pdsettings.binwidth; }
@@ -307,7 +307,7 @@ function getOptions(prefs){
 	    }
 	    if (gcsettings.cutoffdisc!=0){
 		var opt = gcsettings.discoption;
-		out += ",cutoff.disc=discfilter(" +
+		out += ",cutoff.disc=IsoplotR::discfilter(" +
 		    "option=" + opt + "," +
 		    "cutoff=c(" + gcsettings.mindisc[opt-1] +
 		    "," + gcsettings.maxdisc[opt-1] + "),";
@@ -374,7 +374,7 @@ function getOptions(prefs){
 	break;
     case 'ages':
 	if (geochronometer == 'U-Pb' & pdsettings.showdisc!=0){
-	    out += ",discordance=discfilter(option=";
+	    out += ",discordance=IsoplotR::discfilter(option=";
 	    if (pdsettings.showdisc==1){
 		out += pdsettings.discoption;
 		out += ",before=TRUE)";

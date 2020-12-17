@@ -5,8 +5,9 @@ following ingredients:
 
 - Ubuntu
 - nginx
-- crontab
+- R
 - git
+- crontab
 
 This method delivers the latest stable version of the app. Alternative
 methods include:
@@ -19,6 +20,15 @@ install an **IsoplotR** mirror.
 
 Instructions for offline use are provided in the main
 [README](../README.md) file.
+
+### Install *nginx*, *R* and *git*
+
+If these packages are not installed on your system already, then you
+can add them with the following commands:
+
+```sh
+sudo apt-get install nginx git r-base r-base-dev
+```
 
 ### Create a user to run *IsoplotR*
 
@@ -39,11 +49,10 @@ the version that our new user `wwwrunner` has installed.
 Install **IsoplotR** for this user:
 
 ```sh
-sudo -u wwwrunner sh -c "mkdir ~/R"
-sudo -u wwwrunner sh -c "echo R_LIBS_USER=~/R > ~/.Renviron"
-sudo -u wwwrunner Rscript -e "install.packages('remotes')"
-sudo -u wwwrunner Rscript -e "remotes::install_github('pvermees/isoplotr')"
-sudo -u wwwrunner Rscript -e "remotes::install_github('pvermees/isoplotrgui')"
+sudo -Hu wwwrunner sh -c "mkdir ~/R"
+sudo -Hu wwwrunner sh -c "echo R_LIBS_USER=~/R > ~/.Renviron"
+sudo -Hu wwwrunner Rscript -e "install.packages(pkgs='remotes',lib='~/R')"
+sudo -Hu wwwrunner Rscript -e "remotes::install_github(repo=c('pvermees/IsoplotR','pvermees/IsoplotRgui'),lib='~/R')"
 ```
 
 ### Create a systemd service for *IsoplotR*
@@ -58,7 +67,7 @@ After=network.target
 [Service]
 Type=simple
 User=wwwrunner
-ExecStart=Rscript -e IsoplotRgui::daemon(3838)
+ExecStart=/usr/bin/Rscript -e IsoplotRgui::daemon(3838)
 Restart=always
 
 [Install]
@@ -78,49 +87,10 @@ Of course you can use other `systemctl` commands such as `start`, `stop`
 and `restart` (to control whether it is running), and `disable` (to stop it
 from running automatically on boot).
 
-You can view the logs from this process at any time using:
-
-```sh
-sudo journalctl -u isoplotr
-```
-
-(more information  below).
-
 ### Expose *IsoplotR* with *nginx*
 
-To serve this in nginx you can add the following file at
-`/etc/nginx/sites-enabled/default`. If there is one present, you will
-need to add our `location /isoplotr/` block to the appropriate
-`server` block in yours:
-
-```
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /var/www/html;
-
-    index index.html
-
-    server_name _;
-
-    location /isoplotr/ {
-        proxy_pass http://127.0.0.1:3838/;
-		proxy_http_version 1.1;
-		proxy_set_header Upgrade $http_upgrade;
-		proxy_set_header Connection "upgrade";
-    }
-}
-```
-
-Now you can start this all up with:
-
-```sh
-sudo systemctl start isoplotr
-sudo systemctl restart nginx
-```
-
-and **IsoplotR** will be available on `http://localhost/isoplotr`
+You can expose this IsoplotR to your nginx server (if that is what
+you want to use) with the instructions [here](nginx.md)
 
 ### Set up auto-updating
 
@@ -130,14 +100,10 @@ auto-updating.
 Put the following in a script `/usr/local/sbin/updateIsoplotR.sh`:
 
 ```sh
-sudo -u wwwrunner Rscript -e "remotes::install_github('pvermees/IsoplotR',force=TRUE)"
-sudo -u wwwrunner Rscript -e "remotes::install_github('pvermees/IsoplotRgui',force=TRUE)"
+sudo -Hu wwwrunner Rscript -e \
+     "remotes::install_github(repo=c('pvermees/IsoplotR','pvermees/IsoplotRgui'),force=TRUE,lib='~/R')"
 systemctl restart isoplotr
 ```
- 
- (note: if you want to run a different branch of **IsoplotR**, for example
- the bleeding-edge `beta` branch, change `pvermees/IsoplotRgui` to
- `pvermees/IsoplotRgui@beta`)
 
 Ensure it is executable with:
 
@@ -150,53 +116,32 @@ One way to ensure that this script is regularly run is with **crontab**. First e
 ```
 # Minute    Hour   Day of Month    Month            Day of Week           Command
 # (0-59)   (0-23)    (1-31)    (1-12 or Jan-Dec) (0-6 or Sun-Sat)
-    0        0         *             *                  0        /usr/local/sbin/updateIsoplotR.sh
+    0        0         *             *                  0        /usr/local/sbin/updateIsoplotR.sh | /usr/bin/logger
 ```
 
 which will automatically synchronise **IsoplotR** and **IsoplotRgui** with **GitHub** on every Sunday.
 
-You can force an update yourself by running the script as the
-`wwwrunner` user:
+You can force an update yourself by running the script as the `root` user:
 
 ```sh
-sudo -u wwwrunner
+sudo /usr/local/sbin/updateIsoplotR.sh
 ```
 
 ### Maintenance
 
-#### *crontab* logs
+You can view the logs from the various processes mentioned here
+as follows:
 
-```
-grep CRON < /var/log/syslog
-```
-
-or, if you want to see the messages as they appear:
-
-```
-tail -f /var/log/syslog | grep CRON
-```
-
-Or see the **IsoplotR** update log at `/var/log/isoplotr-update.log`.
-If **cron** is running the update script but no output appears it
-means that there is no update available.
-
-#### *SystemD* logs
-
-```sh
-journalctl -u isoplotr
-```
-
-and:
-
-```sh
-journalctl -u nginx
-```
+Process | command for accessing logs
+-----|-----
+cron (including the update script) | `journalctl -eu cron`
+systemD | `journalctl -e _PID=1`
+IsoplotRgui | `journalctl -eu isoplotr`
+nginx | `journalctl -eu nginx`
+nginx detail | logs are written into the `/var/log/nginx` directory
 
 `journalctl` has many interesting options; for example `-r` to see
 the most recent messages first, `-k` to see messages only from this
-boot, or `-f` to show messages as they come in.
-
-#### *nginx* logs
-
-As well as `journalctl`, there are logs from **nginx** at
-`var/log/nginx`.
+boot, or `-f` to show messages as they come in. The `-e` option
+we have been using scrolls to the end of the log so that you are
+looking at the most recent entries immediately.

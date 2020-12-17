@@ -1,7 +1,7 @@
 Package: IsoplotRgui
 Title: Web Interface to 'IsoplotR'
-Version: 3.5
-Date: 2020-10-26
+Version: 3.6
+Date: 2020-12-17
 Authors@R: c(person("Pieter", "Vermeesch", email = "p.vermeesch@ucl.ac.uk", role = c("aut", "cre")), person("Tim","Band",role="ctb"))
 Description: Provides a graphical user interface to the 'IsoplotR' package for radiometric geochronology. The GUI runs in an internet browser and can either be used offline, or hosted on a server to provide online access to the 'IsoplotR' toolbox.
 Author: Pieter Vermeesch [aut, cre],
@@ -16,6 +16,6 @@ LazyData: true
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2020-10-26 17:33:45 UTC; pvermees
+Packaged: 2020-12-17 15:31:29 UTC; pvermees
 Repository: CRAN
-Date/Publication: 2020-11-04 15:30:09 UTC
+Date/Publication: 2020-12-17 16:00:02 UTC
