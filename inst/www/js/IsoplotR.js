@@ -69,7 +69,7 @@ $(function(){
 	    switch (format){
 	    case 1:
 	    case 2: return 7;
-	    case 3: return 10;
+	    case 3:
 	    case 4:
 	    case 5: return 11;
 	    case 6: return 14;
@@ -483,7 +483,7 @@ $(function(){
 	    } else {
 		$(".show4diseq").hide();
 	    }
-	    if (set.commonPb!=1 & pd.anchor!=2){
+	    if (set.commonPb!=1 & pd.anchor!=1){
 		$('.show4commonPbwithout204').hide();
 		$('.show4commonPbwith204').hide();
 		$('.show4commonPbwith208').hide();
@@ -783,7 +783,7 @@ $(function(){
 		$('.hide4model3').hide();
 		break;
 	    }
-	    if (pd.anchor == 1){
+	    if (pd.anchor == 2){
 		$('.show4tanchor').show();
 	    } else {
 		$('.show4tanchor').hide();
@@ -1262,7 +1262,7 @@ $(function(){
 	    $('.show4zeta').show();
 	    $('.hide4zeta').hide();
 	    $('#exterr').prop('checked',set.exterr=='TRUE');
-	    $('#spigdig').val(set.sigdig);
+	    $('#sigdig').val(set.sigdig);
 	    break;
 	case 'ages':
 	    if (geochronometer == 'U-Pb'){

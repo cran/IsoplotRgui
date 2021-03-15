@@ -68,7 +68,7 @@ After=network.target
 [Service]
 Type=simple
 User=wwwrunner
-ExecStart=/usr/bin/Rscript -e IsoplotRgui::daemon(3838)
+ExecStart=/usr/bin/Rscript -e IsoplotRgui::daemon(3839)
 Restart=always
 
 [Install]
@@ -76,7 +76,7 @@ WantedBy=multi-user.target
 ```
 
 Note we are setting `User=wwwrunner` to use our new user and we are
-running it on port 3838.
+running it on port 3839.
 
 Then to make **IsoplotR** start on system boot type:
 
@@ -90,8 +90,49 @@ from running automatically on boot).
 
 ### Expose *IsoplotR* with *nginx*
 
-You can expose this IsoplotR to your nginx server (if that is what
-you want to use) with the instructions [here](nginx.md)
+Ubuntu encourages you to put your configuration files in the
+directory `/etc/nginx/sites-enabled`. If this directory is present
+(and to be sure, you can check for a line saying `include
+/etc/nginx/sites-enabled/*;` in the file `/etc/nginx/nginx.conf`) then
+you need to add a file called `/etc/nginx/sites-enabled/default` with
+the following contents:
+
+```
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+
+    index index.html;
+
+    server_name _;
+
+    location /isoplotr/ {
+        proxy_pass http://127.0.0.1:3839/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+If you already have a file called `/etc/nginx/sites-enabled/default`,
+you will need to copy just the `location {...}` block into the
+appropriate `server {...}` block in the existing file.
+
+You can restart nginx to take the changes to its configuration we
+made above with:
+
+```sh
+sudo systemctl restart nginx
+```
+
+If you need to start isoplotr now, call:
+
+```sh
+sudo systemctl start isoplotr
+```
 
 ### Set up auto-updating
 
