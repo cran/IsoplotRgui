@@ -71,18 +71,18 @@ selection2data <- function(input, method="U-Pb",format=1,ierr=1,d=IsoplotR::dise
                         'rhoXY','rhoXZ','rhoYZ')
     } else if (identical(method,"U-Pb") & format==6) {
         mat[1,1:12] <- c('Pb207U235','errPb207U235',
-                            'Pb206U238','errPb206U238',
-                            'Pb204U238','errPb204U238',
-                            'Pb207Pb206','errPb207Pb206',
-                            'Pb204Pb207','errPb204Pb207',
-                            'Pb204Pb206','errPb204Pb206')
+                         'Pb206U238','errPb206U238',
+                         'Pb204U238','errPb204U238',
+                         'Pb207Pb206','errPb207Pb206',
+                         'Pb204Pb207','errPb204Pb207',
+                         'Pb204Pb206','errPb204Pb206')
     } else if (identical(method,"U-Pb") & format==7) {
         mat[1,1:14] <- c('Pb207U235','errPb207U235',
-                            'Pb206U238','errPb206U238',
-                            'Pb208Th232','errPb208Th232',
-                            'Th232U238','errTh232U238',
-                            'rhoXY','rhoXZ','rhoXW',
-                            'rhoYZ','rhoYW','rhoZW')
+                         'Pb206U238','errPb206U238',
+                         'Pb208Th232','errPb208Th232',
+                         'Th232U238','errTh232U238',
+                         'rhoXY','rhoXZ','rhoXW',
+                         'rhoYZ','rhoYW','rhoZW')
     } else if (identical(method,"U-Pb") & format==8) {
         mat[1,1:14] <- c('U238Pb206','errU238Pb206',
                             'Pb207Pb206','errPb207Pb206',
@@ -128,6 +128,9 @@ selection2data <- function(input, method="U-Pb",format=1,ierr=1,d=IsoplotR::dise
         mat[1,1:5] <- c('K40Ca44','errK40Ca44',
                         'Ca40Ca44','errCa40Ca44','rho')
     } else if (identical(method,"K-Ca") & format==2){
+        mat[1,1:5] <- c('K40Ca40','errK40Ca40',
+                        'Ca44Ca40','errCa44Ca40','rho')
+    } else if (identical(method,"K-Ca") & format==3){
         mat[1,1:6] <- c('K40Ca44','errK40Ca44',
                         'Ca40Ca44','errCa40Ca44',
                         'K40Ca40','errK40Ca40')
@@ -161,6 +164,9 @@ selection2data <- function(input, method="U-Pb",format=1,ierr=1,d=IsoplotR::dise
         mat[1,1:5] <- c('Rb87Sr86','errRb87Sr86',
                         'Sr87Sr86','errSr87Sr86','rho')
     } else if (identical(method,"Rb-Sr") & format==2){
+        mat[1,1:5] <- c('Rb87Sr87','errRb87Sr87',
+                        'Sr86Sr87','errSr86Sr87','rho')
+    } else if (identical(method,"Rb-Sr") & format==3){
         mat[1,1:6] <- c('Rbppm','errRbppm',
                         'Srppm','errSrppm',
                         'Sr87Sr86','errSr87Sr86')
@@ -168,6 +174,9 @@ selection2data <- function(input, method="U-Pb",format=1,ierr=1,d=IsoplotR::dise
         mat[1,1:5] <- c('Sm143Nd144','errSm143Nd144',
                         'Nd143Nd144','errNd143Nd144','rho')
     } else if (identical(method,"Sm-Nd") & format==2){
+        mat[1,1:5] <- c('Sm143Nd143','errSm143Nd143',
+                        'Nd144Nd143','errNd144Nd143','rho')
+    } else if (identical(method,"Sm-Nd") & format==3){
         mat[1,1:6] <- c('Smppm','errSmppm',
                         'Ndppm','errNdppm',
                         'Nd143Nd144','errNd143Nd144')
@@ -175,6 +184,9 @@ selection2data <- function(input, method="U-Pb",format=1,ierr=1,d=IsoplotR::dise
         mat[1,1:5] <- c('Re187Os188','errRe187Os188',
                         'Os187Os188','errOs187Os188','rho')
     } else if (identical(method,"Re-Os") & format==2){
+        mat[1,1:5] <- c('Re187Os188','errRe187Os187',
+                        'Os188Os187','errOs188Os187','rho')
+    } else if (identical(method,"Re-Os") & format==3){
         mat[1,1:6] <- c('Reppm','errReppm',
                         'Osppm','errOsppm',
                         'Os187Os188','errOs187Os188')
@@ -182,33 +194,40 @@ selection2data <- function(input, method="U-Pb",format=1,ierr=1,d=IsoplotR::dise
         mat[1,1:5] <- c('Lu176Hf177','errLu176Hf177',
                         'Hf176Hf177','errHf176Hf177','rho')
     } else if (identical(method,"Lu-Hf") & format==2){
+        mat[1,1:5] <- c('Lu176Hf176','errLu176Hf176',
+                        'Hf177Hf176','errHf177Hf176','rho')
+    } else if (identical(method,"Lu-Hf") & format==3){
         mat[1,1:6] <- c('Luppm','errLuppm',
                         'Hfppm','errHfppm',
                         'Hf176Hf177','errHf176Hf177')
-    } else if (identical(method,"fissiontracks") & format==1){
+    } else if (identical(method,"fissiontracks")){
         mat <- matrix('',5,nc)
-        mat[1,1:2] <-c('Zeta','errZeta')
-        mat[2,1] <- input$zeta
-        mat[2,2] <- input$zetaErr
-        mat[3,1:2] <-c('rhoD','errRhoD')
-        mat[4,1] <- input$rhoD
-        mat[4,2] <- input$rhoDerr
-        mat[5,1:2] <- c('Ns','Ni')
-    } else if (identical(method,"fissiontracks") & format==2){
-        mat <- matrix('',5,nc)
-        mat[1,1:2] <-c('Zeta','errZeta')
-        mat[2,1] <- input$zeta
-        mat[2,2] <- input$zetaErr
-        mat[3,1] <-'spot-size'
-        mat[4,1] <- input$spotSize
-        mat[5,1:2] <- c('Ns','A')
-        mat[5,3:nc] <- rep(c('U','err[U]'),(nc-1)/2)
-    } else if (identical(method,"fissiontracks") & format==3){
-        mat <- matrix('',3,nc)
-        mat[1,1] <-'spot-size'
-        mat[2,1] <- input$spotSize
-        mat[3,1:2] <- c('Ns','A')
-        mat[3,3:nc] <- rep(c('U','err[U]'),(nc-1)/2)
+        if (format==1){
+            mat[1,1:2] <-c('Zeta','errZeta')
+            mat[2,1] <- input$zeta
+            mat[2,2] <- input$zetaErr
+            mat[3,1:2] <-c('rhoD','errRhoD')
+            mat[4,1] <- input$rhoD
+            mat[4,2] <- input$rhoDerr
+            mat[5,1:2] <- c('Ns','Ni')
+        } else if (format==2){
+            mat[1,1:2] <-c('Zeta','errZeta')
+            mat[2,1] <- input$zeta
+            mat[2,2] <- input$zetaErr
+            mat[3,1] <-'spot-size'
+            mat[4,1] <- input$spotSize
+            mat[5,1:2] <- c('Ns','A')
+            mat[5,3:nc] <- rep(c('U','err[U]'),(nc-1)/2)
+        } else if (format==3){
+            mat[1,1] <-'mineral'
+            mat[2,1] <- input$mineral
+            mat[3,1] <-'spot-size'
+            mat[4,1] <- input$spotSize
+            mat[5,1:2] <- c('Ns','A')
+            mat[5,3:nc] <- rep(c('U','err[U]'),(nc-1)/2)
+        } else {
+            stop('Invalid fission track format')
+        }
     } else if (identical(method,"U-Th-He")){
         mat[1,1:8] <- c('He','errHe','U','errU',
                         'Th','errTh','Sm','errSm')
@@ -219,6 +238,8 @@ selection2data <- function(input, method="U-Pb",format=1,ierr=1,d=IsoplotR::dise
         mat <- matrix(labels[1:nc],1,nc)
     } else if (identical(method,"other")){
         mat <- NULL
+    } else {
+        stop('Invalid method')
     }
     mat <- rbind(mat,values)
     if (!identical(method,"detritals")){

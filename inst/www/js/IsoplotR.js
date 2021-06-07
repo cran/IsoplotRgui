@@ -1,65 +1,75 @@
 $(function(){
 
+    function loadJson(filename, callback) {
+        $.getJSON(filename, callback).fail(function() {
+            console.error("Failed to load " + filename);
+        });
+    }
+
     function withData(callback) {
-	$.getJSON('./js/constants.json', function(constants){
-	    $.getJSON('./js/settings.json', function(settings){
-		$.getJSON('./js/data.json', function(data){
-		    callback(constants, settings, data);
-		});
-	    });
-	});
+        loadJson('./js/constants.json', function(constants) {
+            loadJson('./js/settings.json', function(settings) {
+                loadJson('./js/data.json', function(data) {
+                    loadJson('./js/languages.json', function(languages) {
+                        callback(constants, settings, data, languages);
+                    });
+                });
+            });
+        });
     }
 
     function initialise(){
-	$('#OUTPUT').hide();
-	$('#RUN').hide();
-	$('#CSV').hide();
-	IsoplotR = {
-	    constants: null,
-	    settings: null,
-	    data: null,
-	    data4server: [],
-	    optionschanged: false
-	}
-	withData(function(constants, settings, data) {
-	    IsoplotR.constants = constants;
-	    IsoplotR.settings = settings;
-	    IsoplotR.data = data;
-	    settings.geochronometer =
-		$('option:selected', $("#geochronometer")).attr('id');
-	    const languageElement = document.getElementById("language");
-	    const lang = localStorage.getItem("language");
-	    for (const i in settings.languages_supported) {
-		const s = settings.languages_supported[i];
-		if (lang !== null && lang.startsWith(s.prefix)) {
-		    settings.language = s.code;
-		}
-		const option = document.createElement("option");
-		option.id = "lang_" + s.code;
-		option.value = s.code;
-		option.innerHTML = s.name;
-		languageElement.appendChild(option);
-	    }
-	    selectGeochronometer();
-	    IsoplotR = populate(IsoplotR,true);
+        $('#OUTPUT').hide();
+        $('#RUN').hide();
+        $('#CSV').hide();
+        IsoplotR = {
+            constants: null,
+            settings: null,
+            data: null,
+            languages: null,
+            data4server: [],
+            optionschanged: false
+        }
+        withData(function(constants, settings, data, languages) {
+            IsoplotR.constants = constants;
+            IsoplotR.settings = settings;
+            IsoplotR.data = data;
+            IsoplotR.languages = languages;
+            settings.geochronometer =
+                $('option:selected', $("#geochronometer")).attr('id');
+            const languageElement = document.getElementById("language");
+            const lang = localStorage.getItem("language");
+          	for (const i in languages.languages_supported) {
+                const s = languages.languages_supported[i];
+                if (lang !== null && lang.startsWith(s.prefix)) {
+                    settings.language = s.code;
+                }
+                const option = document.createElement("option");
+                option.id = "lang_" + s.code;
+                option.value = s.code;
+                option.innerHTML = s.name;
+                languageElement.appendChild(option);
+            }
+            selectGeochronometer();
+            IsoplotR = populate(IsoplotR,true);
 
-	    // allow tests to initiate translation, even with unsupported languages
-	    window.translatePage = function() {
-		IsoplotR.settings.language = this.localStorage.getItem("language");
-		translate();
-	    }
+            // allow tests to initiate translation, even with unsupported languages
+            window.translatePage = function() {
+                IsoplotR.settings.language = this.localStorage.getItem("language");
+            translate();
+        }
 
-	    translate();
-	    welcome();
-	    $("#INPUT").handsontable({ // add change handler asynchronously
-		afterChange: function(changes,source){
-		    getData4Server(); // placed here because we don't want to
-		    handson2json();   // call the change handler until after
-		}                     // IsoplotR has been initialised
-	    });
-	});
-	rrpc.initialize();
-	};
+        translate();
+        welcome();
+        $("#INPUT").handsontable({ // add change handler asynchronously
+            afterChange: function(changes,source){
+                getData4Server(); // placed here because we don't want to
+                handson2json();   // call the change handler until after
+            }                     // IsoplotR has been initialised
+        });
+    });
+    rrpc.initialize();
+    };
 
     function dnc(){
 	var gc = IsoplotR.settings.geochronometer;
@@ -69,7 +79,7 @@ $(function(){
 	    switch (format){
 	    case 1:
 	    case 2: return 7;
-	    case 3:
+	    case 3: return 10;
 	    case 4:
 	    case 5: return 11;
 	    case 6: return 14;
@@ -183,7 +193,7 @@ $(function(){
 	    break;
 	default:
 	}
-	var row, header;
+	var row;
 	var handson = {
 	    data: [],
 	    headers: []
@@ -284,7 +294,6 @@ $(function(){
 	var c2 = selection[3];
 	var nr = 1+Math.abs(r2-r1);
 	var nc = 1+Math.abs(c2-c1);
-	var dat = [];
 	var DNC = dnc();
 	var toofewcols = (geochronometer!='detritals') & (nc < DNC);
 	var onerow = ((geochronometer=='other' |
@@ -318,11 +327,12 @@ $(function(){
 		IsoplotR.data4server.rhoDerr = $('#rhoDerr').val();
 		break;
 	    case 2:
-		IsoplotR.data4server. zeta = $('#zetaVal').val();
+		IsoplotR.data4server.zeta = $('#zetaVal').val();
 		IsoplotR.data4server.zetaErr = $('#zetaErr').val();
 		IsoplotR.data4server.spotSize = $('#spotSizeVal').val();
 		break;
 	    case 3:
+		IsoplotR.data4server.mineral = IsoplotR.settings.fissiontracks.mineral;
 		IsoplotR.data4server.spotSize = $('#spotSizeVal').val();
 		break;
 	    }
@@ -545,19 +555,25 @@ $(function(){
 		$('.hide4ThU4').hide();
 		break;
 	    }
-	    switch (set.detritus){
-	    case 2:
+	    if (set.format<3){
+		switch (set.detritus){
+		case 2:
+		    $('.show4Th230corr').show();
+		    $('.show4assumedTh230corr').show();
+		    $('.show4measuredTh230corr').hide();
+		    break;
+		case 3:
+		    $('.show4Th230corr').show();
+		    $('.show4assumedTh230corr').hide();
+		    $('.show4measuredTh230corr').show();
+		    break;
+		default:
+		    $('.show4Th230corr').hide();
+		}
+	    } else {
 		$('.show4Th230corr').show();
 		$('.show4assumedTh230corr').show();
 		$('.show4measuredTh230corr').hide();
-		break;
-	    case 3:
-		$('.show4Th230corr').show();
-		$('.show4assumedTh230corr').hide();
-		$('.show4measuredTh230corr').show();
-		break;
-	    default:
-		$('.show4Th230corr').hide();
 	    }
 	    break;
 	case 'Ar-Ar':
@@ -921,7 +937,9 @@ $(function(){
 	    $('#U238U235').val(cst.iratio.U238U235[0]);
 	    $('#errU238U235').val(cst.iratio.U238U235[1]);
 	    $('#Pb206Pb204').val(cst.iratio.Pb206Pb204[0]);
+	    $('#errPb206Pb204').val(cst.iratio.Pb206Pb204[1]);
 	    $('#Pb207Pb204').val(cst.iratio.Pb207Pb204[0]);
+	    $('#errPb207Pb204').val(cst.iratio.Pb207Pb204[1]);
 	    $('#Pb207Pb206').val(cst.iratio.Pb207Pb206[0]);
 	    $('#Pb208Pb206').val(cst.iratio.Pb208Pb206[0]);
 	    $('#Pb208Pb207').val(cst.iratio.Pb208Pb207[0]);
@@ -986,8 +1004,11 @@ $(function(){
 	    $('#common-Pb-option option[value='+set.commonPb+']').
 		prop('selected', 'selected');
 	    $('#Pb206Pb204').val(cst.iratio.Pb206Pb204[0]);
+	    $('#errPb206Pb204').val(cst.iratio.Pb206Pb204[1]);
 	    $('#Pb207Pb204').val(cst.iratio.Pb207Pb204[0]);
+	    $('#errPb207Pb204').val(cst.iratio.Pb207Pb204[1]);
 	    $('#inverse').prop('checked',set.inverse=='TRUE');
+	    $('#projerr').prop('checked',set.projerr=='TRUE');
 	    break;
 	case 'Ar-Ar':
 	    $('#ArAr-formats option[value='+set.format+']').
@@ -997,6 +1018,7 @@ $(function(){
 	    $('#LambdaK40').val(cst.lambda.K40[0]),
 	    $('#errLambdaK40').val(cst.lambda.K40[1]),
 	    $('#i2iArAr').prop('checked',set.i2i=='TRUE');
+	    $('#projerr').prop('checked',set.projerr=='TRUE');
 	    $('#inverse').prop('checked',set.inverse=='TRUE');
 	    break;
 	case 'Th-Pb':
@@ -1007,6 +1029,7 @@ $(function(){
 	    $('#LambdaTh232').val(cst.lambda.Th232[0]),
 	    $('#errLambdaTh232').val(cst.lambda.Th232[1]),
 	    $('#i2iThPb').prop('checked',set.i2i=='TRUE');
+	    $('#projerr').prop('checked',set.projerr=='TRUE');
 	    $('#inverse').prop('checked',set.inverse=='TRUE');
 	    break;
 	case 'K-Ca':
@@ -1017,6 +1040,7 @@ $(function(){
 	    $('#LambdaK40').val(cst.lambda.K40[0]),
 	    $('#errLambdaK40').val(cst.lambda.K40[1]),
 	    $('#i2iKCa').prop('checked',set.i2i=='TRUE');
+	    $('#projerr').prop('checked',set.projerr=='TRUE');
 	    $('#inverse').prop('checked',set.inverse=='TRUE');
 	    break;
 	case 'Rb-Sr':
@@ -1033,6 +1057,7 @@ $(function(){
 	    $('#LambdaRb87').val(cst.lambda.Rb87[0]);
 	    $('#errLambdaRb87').val(cst.lambda.Rb87[1]);
 	    $('#i2iRbSr').prop('checked',set.i2i=='TRUE');
+	    $('#projerr').prop('checked',set.projerr=='TRUE');
 	    $('#inverse').prop('checked',set.inverse=='TRUE');
 	    break;
 	case 'Sm-Nd':
@@ -1065,6 +1090,7 @@ $(function(){
 	    $('#LambdaSm147').val(cst.lambda.Sm147[0]);
 	    $('#errLambdaSm147').val(cst.lambda.Sm147[1]);
 	    $('#i2iSmNd').prop('checked',set.i2i=='TRUE');
+	    $('#projerr').prop('checked',set.projerr=='TRUE');
 	    $('#inverse').prop('checked',set.inverse=='TRUE');
 	    break;
 	case 'Re-Os':
@@ -1087,6 +1113,7 @@ $(function(){
 	    $('#LambdaRe187').val(cst.lambda.Re187[0]);
 	    $('#errLambdaRe187').val(cst.lambda.Re187[1]);
 	    $('#i2iReOs').prop('checked',set.i2i=='TRUE');
+	    $('#projerr').prop('checked',set.projerr=='TRUE');
 	    $('#inverse').prop('checked',set.inverse=='TRUE');
 	    break;
 	case 'Lu-Hf':
@@ -1107,6 +1134,7 @@ $(function(){
 	    $('#LambdaLu176').val(cst.lambda.Lu176[0]);
 	    $('#errLambdaLu176').val(cst.lambda.Lu176[1]);
 	    $('#i2iLuHf').prop('checked',set.i2i=='TRUE');
+	    $('#projerr').prop('checked',set.projerr=='TRUE');
 	    $('#inverse').prop('checked',set.inverse=='TRUE');
 	    break;
 	case 'U-Th-He':
@@ -1203,7 +1231,7 @@ $(function(){
 	    if (shownumbers){ $('#radial-pch').hide(); }
 	    else { $('#radial-pch').show(); }
 	    $('#mint').val(set.mint);
-	    $('#t0').val(set.t0);
+	    $('#z0').val(set.z0);
 	    $('#maxt').val(set.maxt);
 	    $('#alpha').val(set.alpha);
 	    $('#sigdig').val(set.sigdig);
@@ -1280,7 +1308,6 @@ $(function(){
 	    $('#classical').prop('checked',set.classical=='TRUE');
 	    $('#shepard').prop('checked',set.shepard=='TRUE');
 	    $('#nnlines').prop('checked',set.nnlines=='TRUE');
-	    $('#ticks').prop('checked',set.ticks=='TRUE');
 	    $('#pch').val(set.pch);
 	    $('#pos').val(set.pos);
 	    $('#col').val(set.col);
@@ -1387,7 +1414,9 @@ $(function(){
 	    set.lambda.U235[0] = getNumber("#LambdaU235");
 	    set.lambda.U235[1] = getNumber("#errLambdaU235");
 	    set.iratio.Pb206Pb204[0] = getNumber('#Pb206Pb204');
+	    set.iratio.Pb206Pb204[1] = getNumber('#errPb206Pb204');
 	    set.iratio.Pb207Pb204[0] = getNumber('#Pb207Pb204');
+	    set.iratio.Pb207Pb204[1] = getNumber('#errPb207Pb204');
 	    break;
 	case 'Th-U':
 	    gcsettings.detritus = getOption("#detritus");
@@ -1526,7 +1555,7 @@ $(function(){
 	    set.lambda.U238[0] = getNumber("#LambdaU238");
 	    set.lambda.U238[1] = getNumber("#errLambdaU238");
 	    if (gcsettings.format == 3){
-		set.mineral = $('#mineral-option').prop('value');
+		gcsettings.mineral = $('#mineral-option').prop('value');
 		set.etchfact[set.mineral] = getNumber("#etchfact");
 		set.tracklength[set.mineral] = getNumber("#tracklength");
 		set.mindens[set.mineral] = getNumber("#mindens");
@@ -1582,7 +1611,7 @@ $(function(){
 	    pdsettings.transformation = getOption("#transformation");
 	    pdsettings.numpeaks = getOption("#mixtures");
 	    pdsettings.mint = check($('#mint').val(),'auto');
-	    pdsettings.t0 = check($('#t0').val(),'auto');
+	    pdsettings.z0 = check($('#z0').val(),'auto');
 	    pdsettings.maxt = check($('#maxt').val(),'auto');
 	    pdsettings.alpha = getNumber('#alpha');
 	    pdsettings.sigdig = getInt('#sigdig');
@@ -1655,7 +1684,6 @@ $(function(){
 	    pdsettings["classical"] = truefalse('#classical');
 	    pdsettings["shepard"] = truefalse('#shepard');
 	    pdsettings["nnlines"] = truefalse('#nnlines');
-	    pdsettings["ticks"] = truefalse('#ticks');
 	    pdsettings["pch"] = $('#pch').val();
 	    pdsettings["pos"] = getInt('#pos');
 	    pdsettings["col"] = $('#col').val();
@@ -1673,6 +1701,9 @@ $(function(){
 	    }
 	    pdsettings.sigdig = getInt('#sigdig');
 	    i2i(geochronometer);
+	    if (projerr(geochronometer)){
+		gcsettings.projerr = truefalse("#projerr");
+	    }
 	    break;
 	case 'helioplot':
 	    pdsettings.logratio = truefalse('#logratio');
@@ -1684,7 +1715,7 @@ $(function(){
 	    pdsettings["maxx"] = check($('#maxx').val(),'auto');
 	    pdsettings["miny"] = check($('#miny').val(),'auto');
 	    pdsettings["maxy"] = check($('#maxy').val(),'auto');
-	    pdsettings["fact"] = check($('#fact').val(),'auto');
+	    pdsettings["fact"] = $('#fact').val();
 	    pdsettings.ellipsefill = $('#ellipsefill').val();
 	    pdsettings.ellipsestroke = $('#ellipsestroke').val();
 	    pdsettings.model = getOption("#helioplot-models");
@@ -1755,6 +1786,12 @@ $(function(){
 	    break;
 	}
     }
+
+    function projerr(gc){
+	return(gc=='Pb-Pb' | gc=='Ar-Ar' | gc=='K-Ca' |
+	       gc=='Th-Pb' | gc=='Rb-Sr' | gc=='Sm-Nd' |
+	       gc=='Re-Os' | gc=='Lu-Hf');
+    }
     
     function changePlotDevice(){
 	var gc = IsoplotR.settings.geochronometer;
@@ -1801,7 +1838,6 @@ $(function(){
 	let language = lang;
 	IsoplotR.settings.language = language;
 	localStorage.setItem("language", language);
-	translate();
 	showOrHide();
     }
 
@@ -2147,7 +2183,7 @@ $(function(){
     }
 
     function getFallbackText(key, fallback_messages, filename) {
-        let link = IsoplotR.settings["translation_link"]
+        let link = IsoplotR.languages["translation_link"]
             .replace("${FILENAME}", filename)
             .replace("${LANGUAGE}", IsoplotR.settings.language)
             .replace("${ID}", key);
@@ -2213,7 +2249,6 @@ $(function(){
 
     $.tutorial = function(){
 	$("#myplot").load( "tutorial.html" , function() {
-	    translate();
 	    showOrHide();
 	});
     }
@@ -2301,6 +2336,7 @@ $(function(){
 	    $("#mindens").val(cst.mindens[mineral]);
 	    break;
 	}
+	IsoplotR.settings.fissiontracks.mineral = mineral;
     }
     
     $(".button").button()
@@ -2370,6 +2406,7 @@ $(function(){
 	    $("#geochronometer").selectmenu("refresh");
 	    selectGeochronometer()
 	    json2handson();
+	    translate();
 	}
 	reader.readAsText(file);
     });

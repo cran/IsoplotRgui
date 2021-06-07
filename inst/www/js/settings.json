@@ -1,29 +1,8 @@
 {
     "language": "en",
-    "languages_supported" : [
-	{
-	    "code": "en",
-	    "prefix": "en",
-	    "name": "English",
-	    "short_name": "EN"
-	},
-	{
-	    "code": "zh_Hans",
-	    "prefix": "zh",
-	    "name": "中文",
-	    "short_name": "CN"
-	},
-	{
-	    "code": "es",
-	    "prefix": "es",
-	    "name": "Español",
-	    "short_name": "ES"
-	}
-    ],
     "geochronometer": "U-Pb",
     "plotdevice": "concordia",
     "ierr": 1,
-    "translation_link": "http://lgc.es.ucl.ac.uk/weblate/translate/isoplotrgui/${FILENAME}/${LANGUAGE}?q=context%3A.${ID}",
     "par": {
 	"cex": 1
     },
@@ -60,41 +39,49 @@
     "Pb-Pb": {
 	"format": 3,
 	"commonPb": 2,
+	"projerr": "FALSE",
 	"inverse": "TRUE"
     },
     "Ar-Ar": {
 	"format": 3,
 	"i2i": "FALSE",
+	"projerr": "FALSE",
 	"inverse": "TRUE"
     },
     "Th-Pb": {
 	"format": 2,
 	"i2i": "TRUE",
+	"projerr": "FALSE",
 	"inverse": "TRUE"
     },
     "K-Ca": {
 	"format": 1,
 	"i2i": "TRUE",
+	"projerr": "FALSE",
 	"inverse": "FALSE"
     },
     "Rb-Sr": {
 	"format": 1,
 	"i2i": "TRUE",
+	"projerr": "FALSE",
 	"inverse": "FALSE"
     },
     "Sm-Nd": {
 	"format": 1,
 	"i2i": "TRUE",
+	"projerr": "FALSE",
 	"inverse": "FALSE"
     },
     "Re-Os": {
 	"format": 1,
 	"i2i": "TRUE",
+	"projerr": "FALSE",
 	"inverse": "FALSE"
     },
     "Lu-Hf": {
 	"format": 1,
 	"i2i": "TRUE",
+	"projerr": "FALSE",
 	"inverse": "FALSE"
     },
     "U-Th-He": {},
@@ -172,7 +159,7 @@
     "radial": {
 	"transformation": "log",
 	"mint": "auto",
-	"t0": "auto",
+	"z0": "auto",
 	"maxt": "auto",
 	"pch": 21,
 	"cex": 1,
@@ -237,7 +224,6 @@
 	"classical": "FALSE",
 	"shepard": "FALSE",
         "nnlines": "FALSE",
-	"ticks": "TRUE",
 	"pch": 21,
 	"pos": 0,
 	"cex": 5,
