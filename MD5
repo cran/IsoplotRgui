@@ -1,6 +1,6 @@
-ef71f99e79b126c61a12e8f99f734f4a *DESCRIPTION
+32663f5558ca01175c918a8b12ab8648 *DESCRIPTION
 192f541f06de69682b3d20cc02100170 *NAMESPACE
-08218c6c0fe790ab44f77870c0b1a82b *R/IsoplotR.R
+60a8c15418068efa71f185af133c800b *R/IsoplotR.R
 726035897e2205124e360ce102a8afea *R/server.R
 fe33eb7bf023a3f05cbe228140dfdf24 *README.md
 5f4c55ebc52c840ead227e9c217a4a33 *build/CRAN.md
@@ -62,7 +62,7 @@ c0ab3a148d6b8af3bb4088d6e1f38a8f *inst/www/home/home.css
 a236d8f2210cee4845d3a110d7cf8e36 *inst/www/home/index.html
 d21065c7127cb822e968cb5a8c8119a8 *inst/www/home/intro.html
 0752f8f5160504074219ed5cba5a41b0 *inst/www/home/map.html
-71930309f449efee174284dfbab0e507 *inst/www/home/news.html
+5288b6db3bf9539507f891dc7f31159c *inst/www/home/news.html
 d053053176cbfac48c2526435e9cbebf *inst/www/home/offline.html
 aa693cbb1e66ce1a06b2ed59a7a109bb *inst/www/home/world.svg
 9df3e35712db1ab86f11bf2d5a85b780 *inst/www/images/InputFormats.png
@@ -97,10 +97,10 @@ e06ac8f6dd03ebecf7e8ac64aa14496b *inst/www/js/handsontable.min.js
 46c7fd1c1b62b35482dd080975117750 *inst/www/js/run_prettify.js
 6da8acedd8eed115a7fadb9b0c8bab7a *inst/www/js/settings.json
 9102c1d9ac4c022333473ef930aff5d6 *inst/www/js/toolbox.js
-a533c05e36835b3559d617b208583f86 *inst/www/locales/en/contextual_help.json
+ea19ed52ceb7952cfed822704efa129e *inst/www/locales/en/contextual_help.json
 c259abe3de9d59b8d47e3cde0821890b *inst/www/locales/en/dictionary_class.json
 19f05caa9c47a97dd41f3a58d64072a3 *inst/www/locales/en/dictionary_id.json
-6517effc4f6b58e54d7a5aadb6473687 *inst/www/locales/en/home_id.json
+d5917679d77e53ec568c2203e9edfd87 *inst/www/locales/en/home_id.json
 bc6df9edf6c771ca34b8fc4680c541f3 *inst/www/locales/es/contextual_help.json
 087217ef4caa73e5ad7754dd80c829bb *inst/www/locales/es/dictionary_class.json
 daef0c408e610fa722facafcb37a0afc *inst/www/locales/es/dictionary_id.json
@@ -138,10 +138,10 @@ c37fa84c6a068b987a0a5fd939de74c1 *inst/www/options/regression.html
 ce46eabd7209695f7d1397fe07c40d56 *inst/www/options/set-zeta.html
 ef018f7ee6c575b60fc6ad998711a1bc *inst/www/options/spectrum.html
 5bfb1ceb2c0fde79796f31c3d2323ba4 *inst/www/tutorial.html
-8653d5c7898950016e5d019df6815626 *inst/www/version.txt
+86a22d6ea920acc9bed2b42302b446f7 *inst/www/version.txt
 8495b4493a4708e9f08f8209df3f73ae *inst/www/welcome.html
 f6a7758b38db597ba6300359e93273c4 *man/IsoplotR.Rd
-028c2a2bd42b70e443f812a9206a26e4 *man/daemon.Rd
+0fd9abedfcd2f64a1d41963b1c218b42 *man/daemon.Rd
 f8daaa5524f1b38f0fd2ef363c97a635 *man/encodePlot.Rd
 45646eb1daff6d0b2fbe2885f82794e0 *man/encodePlotAsPdf.Rd
 dc8d48d384a28bde383216237e853ae2 *man/encodePlotAsPng.Rd
