@@ -8,13 +8,7 @@ function check(x,val){
 }
 
 function truefalse(id){
-    var out = $(id).prop('checked') ? 'TRUE' : 'FALSE';
-    return(out);
-}
-
-function falsetrue(id){
-    var out = $(id).prop('checked') ? 'FALSE' : 'TRUE';
-    return(out);
+    return $(id).prop('checked');
 }
 
 function getOption(id){
@@ -23,8 +17,21 @@ function getOption(id){
     return(out);
 }
 
-function getNumber(id){
-    return(Number($(id).val()));
+function setOption(id, val) {
+    $(id + ' option[value=' + val + ']').prop('selected', 'selected');
+}
+
+function getRadio(name){
+    return $('input[name="' + name + '"]:checked').val();
+}
+
+function setRadio(name, val) {
+    $('input[name="' + name + '"][value="' + val +'"]').prop('checked', true);
+}
+
+function getNumber(id, def){
+    var x = Number($(id).val());
+    return isNaN(x) && typeof(def) !== 'undefined'? def : x;
 }
 
 function getInt(id){
@@ -42,14 +49,37 @@ function setSignificantDigits(x,n){
     return Number.parseFloat(x).toPrecision(n);
 }
 
+// temporary fix for migration from 4.4 to 5.0
+function cleanbool(n){
+    if ($.type(n) !== 'object'){
+	if (n==='TRUE'){
+	    return(true);
+	} else if (n==='FALSE'){
+	    return(false);
+	} else if (n==="'black'"){
+	    return("#000000");
+	} else if (n==="rgb(0,1,1,0.5)"){
+	    return("#00FFFF");
+	} else {
+	    return(n);
+	}
+    } else {
+	for (var k in n){
+	    n[k] = cleanbool(n[k]);
+	}
+	return(n)
+    }
+}
+
 function patchJSON(n,o){
     if ($.type(o) !== 'object'){
-        return n;
+        return cleanbool(n);
     }
     for (var k in o){
-	 if (k in n){
-	     o[k] = (k === 'data') ? n[k] : patchJSON(n[k],o[k]);
-	 }
+	if (k in n){
+	    o[k] = (k==='data' | $.type(n[k])!== 'object') ?
+		cleanbool(n[k]) :  patchJSON(n[k],o[k]);
+	}
     }
     return o;
 }
