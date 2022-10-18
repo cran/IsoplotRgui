@@ -273,7 +273,7 @@
     "save": "保存文件",
     "plot": "生成投图",
     "run": "运行",
-    "IsoplotR_version": "这是 IsoplotRgui 版本",
+    "IsoplotR_version": "这是 IsoplotR 版本",
     "reference": "引用方式：",
     "ages_err": "<span class='hidden show4PbPb'> Pb-Pb </span> <span class='hidden show4ArAr'> Ar-Ar </span> <span class='hidden show4RbSr'> Rb-Sr </span> <span class='hidden show4SmNd'> Sm-Nd </span> <span class='hidden show4ReOs'> Re-Os </span> <span class='hidden show4LuHf'> Lu-Hf </span> <span class='hidden show4UThHe'> U-Th-He </span> <span class='hidden show4fissiontracks'>裂变径迹</span> <span class='hidden show4ThU1 show4ThU2'> <sup>230</sup>Th-<sup>234</sup>U-<sup>238</sup>U</span> <span class='hidden show4ThU3 show4ThU4'> <sup>230</sup>Th-<sup>238</sup>U</span> 年龄的估算误差。",
     "ages_err_75": "<sup>207</sup>Pb/<sup>235</sup>U年龄估算误差。",
@@ -520,5 +520,7 @@
     "PbPb_err_67": "<sup>206</sup>Pb/<sup>207</sup>Pb测量误差",
     "ages_48_0": "初始<sup>234</sup>U/<sup>238</sup>U比值估算。",
     "translate_button": "<a class='translatelink' href='${LINK}' title='请点击此链接以帮助翻译此原文。'>翻译</a>",
-    "help_ellipsestroke": "误差椭圆边框颜色："
+    "help_ellipsestroke": "误差椭圆边框颜色：",
+    "help_oerr": "输出误差类型：",
+    "help_showdisc": "显示不协和度："
 }

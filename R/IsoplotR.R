@@ -12,31 +12,27 @@ omitter <- function(dat, nc, flags = c("x", "X")) {
 }
 
 settingsiratio <- list(
-    "U-Pb" = c("Pb207Pb206", "Pb208Pb206", "Pb208Pb207"),
-    "Pb-Pb" = c("Pb206Pb204", "Pb207Pb204", "U238U235"),
+    "U-Pb" = c("U238U235", "Pb207Pb206", "Pb206Pb204",
+               "Pb207Pb204", "Pb208Pb206", "Pb208Pb207"),
+    "Pb-Pb" = c("U238U235", "Pb206Pb204", "Pb207Pb204"),
     "Th-U" = c(),
     "Ar-Ar" = c("Ar40Ar36"),
     "Th-Pb" = c("Pb208Pb204"),
     "K-Ca" = c("Ca40Ca44"),
-    "Sm-Nd" = c("Sm144Sm152", "Sm147Sm152", "Sm148Sm152",
-        "Sm149Sm152", "Sm150Sm152", "Sm154Sm152", "Nd142Nd144",
-        "Nd143Nd144", "Nd145Nd144", "Nd146Nd144", "Nd148Nd144",
-        "Nd150Nd144"
-    ),
-    "Re-Os" = c("Os184Os192", "Os186Os192", "Os187Os192",
-        "Os188Os192", "Os190Os192"
-    ),
+    "Sm-Nd" = c("Sm144Sm152", "Sm147Sm152", "Sm148Sm152","Sm149Sm152",
+                "Sm150Sm152", "Sm154Sm152", "Nd142Nd144","Nd143Nd144",
+                "Nd145Nd144", "Nd146Nd144", "Nd148Nd144","Nd150Nd144"),
+    "Re-Os" = c("Re185Re187", "Os184Os192", "Os186Os192",
+                "Os187Os192", "Os188Os192", "Os190Os192"),
     "Rb-Sr" = c("Rb85Rb87", "Sr84Sr86", "Sr87Sr86", "Sr88Sr86"),
-    "Lu-Hf" = c(
-        "Lu176Lu175", "Hf174Hf177", "Hf176Hf177",
-        "Hf178Hf177", "Hf179Hf177", "Hf180Hf177"
-    ),
+    "Lu-Hf" = c("Lu176Lu175", "Hf174Hf177", "Hf176Hf177",
+                "Hf178Hf177", "Hf179Hf177", "Hf180Hf177"),
     "U-Th-He" = c("U238U235"),
     "detritals" = c()
 )
 
 settingslambda <- list(
-    "U-Pb" = c("Th232", "U234", "Th230", "Ra226", "Pa231"),
+    "U-Pb" = c("U238", "U235", "Th232", "U234", "Th230", "Ra226", "Pa231"),
     "Pb-Pb" = c("U238", "U235"),
     "Th-U" = c("Th230", "U234"),
     "Ar-Ar" = c("K40"),
@@ -57,9 +53,9 @@ applysettings <- function(params, settings) {
         if (gcsettings$format == 3) {
             v <- settings$iratio$U238U235
             IsoplotR::settings("iratio", "U238U235", v[[1]], v[[2]])
-            v <- settings$iratio$U238
+            v <- settings$lambda$U238
             IsoplotR::settings("lambda", "U238", v[[1]], v[[2]])
-            v <- settings$iratio$fission
+            v <- settings$lambda$fission
             IsoplotR::settings("lambda", "fission", v[[1]], v[[2]])
             mineral <- gcsettings$mineral
             v <- settings$etchfact[[mineral]]
@@ -71,15 +67,15 @@ applysettings <- function(params, settings) {
         }
         return(NULL)
     }
-    mapply(function(mineral) {
-        v <- settings$iratio[[mineral]]
-        IsoplotR::settings("iratio", mineral, v[[1]], v[[2]])
+    mapply(function(ratio) {
+        v <- settings$iratio[[ratio]]
+        IsoplotR::settings("iratio", ratio, v[[1]], v[[2]])
     }, settingsiratio[[geochronometer]])
-    mapply(function(mineral) {
-        v <- settings$lambda[[mineral]]
-        IsoplotR::settings("lambda", mineral, v[[1]], v[[2]])
+    mapply(function(nuclide) {
+        v <- settings$lambda[[nuclide]]
+        IsoplotR::settings("lambda", nuclide, v[[1]], v[[2]])
     }, settingslambda[[geochronometer]])
-    IsoplotR::settings("alpha", params$alpha)
+    IsoplotR::settings("alpha", settings$alpha)
 }
 
 getlimits <- function(min, max) {
@@ -121,6 +117,13 @@ gettimelimits <- function(min, max) {
         if (isnullorauto(min)) 0 else as.numeric(min),
         if (isnullorauto(max)) 4500 else as.numeric(max)
     ))
+}
+
+str2vec <- function(s) {
+    if (length(s) == 0 || s == "auto") return(NULL)
+    v <- unlist(strsplit(s,split=','))
+    if (all(coerceabletonumeric(v))) return(as.numeric(v))
+    else return(v)
 }
 
 notauto <- function(v) {
@@ -166,13 +169,13 @@ concordia <- function(fn, params, data, s2d, settings, cex) {
     args$tlim <- gettimelimits(pd$mint, pd$maxt)
     args$xlim <- getlimits(pd$minx, pd$maxx)
     args$ylim <- getlimits(pd$miny, pd$maxy)
-    args$ticks <- notauto(pd$ticks)
+    args$ticks <- str2vec(pd$ticks)
     if (pd$anchor == 1) {
         args$anchor <- 1
     } else if (pd$anchor == 2) {
         args$anchor <- c(2, pd$tanchor)
     }
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::concordia, args)
 }
 
@@ -231,7 +234,7 @@ radialplot <- function(fn, params, data, s2d, settings, cex) {
     if (params$geochronometer == "Pb-Pb") {
         args$common.Pb <- params$gcsettings$commonPb
     }
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::radialplot, args)
 }
 
@@ -260,7 +263,7 @@ evolution <- function(fn, params, data, s2d, settings, cex) {
     if (pd$transform) args$xlim <- gettimelimits(pd$mint, pd$maxt)
     else args$xlim <- getlimits(pd$min08, pd$max08)
     args$ylim <- getlimits(pd$min48, pd$max48)
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::evolution, args)
 }
 
@@ -289,7 +292,7 @@ setregression <- function(params, data, s2d, settings) {
 regression <- function(fn, params, data, s2d, settings, cex, york) {
     args <- setregression(params, data, s2d, settings)
     args$x <- IsoplotR::data2york(args$x, format = york$format)
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::isochron, args)
 }
 
@@ -322,7 +325,7 @@ isochron <- function(fn, params, data, s2d, settings, cex, york = NULL) {
     if (gc != "U-Th-He") {
         args$exterr <- params$pdsettings$exterr
     }
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::isochron, args)
 }
 
@@ -383,7 +386,7 @@ weightedmean <- function(fn, params, data, s2d, settings, cex) {
     if (!(gc %in% c("other", "Th-U", "U-Th-He"))) {
         args$exterr <- params$pdsettings$exterr
     }
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::weightedmean, args)
 }
 
@@ -410,7 +413,7 @@ agespectrum <- function(fn, params, data, s2d, settings, cex) {
         args$i2i <- params$gcsettings$i2i
         args$exterr <- pd$exterr
     }
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::agespectrum, args)
 }
 
@@ -421,9 +424,8 @@ kde <- function(fn, params, data, s2d, settings, cex) {
     gc <- params$geochronometer
     args <- list(
         x = getdata(params, data, s2d),
-        hide =
-            if (gc == "detritals") params$gcsettings$hide
-            else omitter(data$data, nc, c("x", "X")),
+        hide = if (gc == "detritals") str2vec(params$gcsettings$hide)
+               else omitter(data$data, nc, c("x", "X")),
         rug = if (gc == "detritals") pd$rugdetritals else pd$rug,
         log = pd$log,
         binwidth = naifauto(pd$binwidth),
@@ -464,7 +466,7 @@ kde <- function(fn, params, data, s2d, settings, cex) {
         args$samebandwidth <- pd$samebandwidth
         args$normalise <- pd$normalise
     }
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::kde, args)
 }
 
@@ -508,11 +510,11 @@ cad <- function(fn, params, data, s2d, settings, cex) {
     }
     if (gc == "detritals") {
         args$col <- pd$colmap
-        args$hide <- params$hide
+        args$hide <- str2vec(params$hide)
     } else {
         args$hide <- omitter(data$data, nc, c("x", "X"))
     }
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::cad, args)
 }
 
@@ -549,7 +551,7 @@ helioplot <- function(fn, params, data, s2d, settings, cex) {
     args$xlim <- getlimits(pd$minx, pd$maxx)
     args$ylim <- getlimits(pd$miny, pd$maxy)
     args$fact <- notauto(pd$fact)
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::helioplot, args)
 }
 
@@ -566,7 +568,7 @@ mds <- function(fn, params, data, s2d, settings, cex) {
         pch = getpch(pd$pch),
         col = pd$col,
         bg = pd$bg,
-        hide = params$hide
+        hide = str2vec(params$hide)
     )
     if (!shepard) {
         args$cex <- pd$cex
@@ -574,7 +576,7 @@ mds <- function(fn, params, data, s2d, settings, cex) {
     if (pd$pos %in% c(1, 2, 3, 4)) {
         args$pos <- pd$pos
     }
-    graphics::par(cex = cex)
+    graphics::par(cex = cex, mgp = c(2.5,1,0))
     do.call(IsoplotR::mds, args)
 }
 
@@ -633,7 +635,7 @@ age <- function(fn, params, data, s2d, settings) {
 #' \donttest{IsoplotR()}
 #' @export
 IsoplotR <- function(
-    host = "0.0.0.0",
+    host = if (daemonize) "0.0.0.0" else "127.0.0.1",
     port = NULL,
     timeout = Inf,
     daemonize = !is.null(port)
@@ -664,24 +666,6 @@ IsoplotR <- function(
             ages = age
         )
     )
-    extramessage <- NULL
-    if (is.null(port)) {
-        protocol <- "http://"
-        if (grepl("://", host, fixed=TRUE)) {
-            protocol <- ""
-        }
-        port <- s$getPort()
-        utils::browseURL(paste0(protocol,
-          if (host == "0.0.0.0") "127.0.0.1" else host,
-          ":", port))
-        extramessage <- (
-            "Call IsoplotRgui::stopIsoplotR() to stop serving IsoplotR"
-        )
-    }
-    message("Listening on ", host, ":", port)
-    if (!is.null(extramessage)) {
-        message(extramessage)
-    }
     invisible(s)
 }
 

@@ -1033,7 +1033,7 @@ $(function(){
 	    prop('selected', 'selected');
 	$('#oerr option[value='+IsoplotR.settings.oerr+']').
 	    prop('selected', 'selected');
-	$('#alpha').val(IsoplotR.settings.alpha);
+	$('#alpha').val(cst.alpha);
 	$('#sigdig').val(IsoplotR.settings.sigdig);
 	switch (option){
 	case 'U-Pb':
@@ -1502,7 +1502,7 @@ $(function(){
 	var pdsettings = set[plotdevice];
 	var cst = IsoplotR.constants;
 	set.oerr = getInt("#oerr");
-	set.alpha = getNumber("#alpha");
+	cst.alpha = getNumber("#alpha");
 	if (['KDE','CAD','MDS'].indexOf(plotdevice) < 0){
 	    set.sigdig = getNumber("#sigdig");
 	}
@@ -1723,8 +1723,7 @@ $(function(){
                 option: getOption('#ellipsefill_option'),
                 alpha: check($('#ellipsefill_alpha').val(), 1),
                 ramp_start: $('#ellipsefill_ramp_start').val(),
-                ramp_end: $('#ellipsefill_ramp_end').val(),
-                reverse: $('#ramp_reverse').prop('checked')
+                ramp_end: $('#ellipsefill_ramp_end').val()
             };
 	    pdsettings.ellipsestroke = $('#ellipsestroke').val();
 	    pdsettings.clabel = $('#clabel').val();
@@ -1755,8 +1754,7 @@ $(function(){
                 option: getOption('#ellipsefill_option'),
                 alpha: check($('#ellipsefill_alpha').val(), 1),
                 ramp_start: $('#ellipsefill_ramp_start').val(),
-                ramp_end: $('#ellipsefill_ramp_end').val(),
-                reverse: $('#ramp_reverse').prop('checked')
+                ramp_end: $('#ellipsefill_ramp_end').val()
             };
 	    pdsettings.ellipsestroke = $('#ellipsestroke').val();
 	    pdsettings.clabel = $('#clabel').val();
@@ -1773,8 +1771,7 @@ $(function(){
             pdsettings.bg = {
                 option: getOption('#bg_option'),
                 ramp_start: $('#bg_ramp_start').val(),
-                ramp_end: $('#bg_ramp_end').val(),
-                reverse: $('#ramp_reverse').prop('checked')
+                ramp_end: $('#bg_ramp_end').val()
             };
 	    pdsettings.clabel = $('#clabel').val();
 	    pdsettings["cex"] = getNumber('#pcex');
@@ -1792,8 +1789,7 @@ $(function(){
 	    pdsettings.bg = {
                 option: getOption('#bg_option'),
                 ramp_start: $('#bg_ramp_start').val(),
-                ramp_end: $('#bg_ramp_end').val(),
-                reverse: $('#ramp_reverse').prop('checked')
+                ramp_end: $('#bg_ramp_end').val()
             };
 	    pdsettings.outliercol = $('#outliercol').val();
         pdsettings.rect_alpha = getNumber('#rect_alpha', 1);
@@ -1808,8 +1804,7 @@ $(function(){
 	    pdsettings.bg = {
                 option: getOption('#bg_option'),
                 ramp_start: $('#bg_ramp_start').val(),
-                ramp_end: $('#bg_ramp_end').val(),
-                reverse: $('#ramp_reverse').prop('checked')
+                ramp_end: $('#bg_ramp_end').val()
             };
 	    pdsettings.nonplateaucol = $('#nonplateaucol').val();
             pdsettings.nonplateau_alpha = getNumber('#nonplateau_alpha', 1);
@@ -1885,8 +1880,7 @@ $(function(){
                 option: getOption('#ellipsefill_option'),
                 alpha: check($('#ellipsefill_alpha').val(), 1),
                 ramp_start: $('#ellipsefill_ramp_start').val(),
-                ramp_end: $('#ellipsefill_ramp_end').val(),
-                reverse: $('#ramp_reverse').prop('checked')
+                ramp_end: $('#ellipsefill_ramp_end').val()
             };
 	    pdsettings.ellipsestroke = $('#ellipsestroke').val();
 	    pdsettings.model = getOption("#helioplot-models");
@@ -1908,8 +1902,7 @@ $(function(){
                 option: getOption('#ellipsefill_option'),
                 alpha: check($('#ellipsefill_alpha').val(), 1),
                 ramp_start: $('#ellipsefill_ramp_start').val(),
-                ramp_end: $('#ellipsefill_ramp_end').val(),
-                reverse: $('#ramp_reverse').prop('checked')
+                ramp_end: $('#ellipsefill_ramp_end').val()
             };
 	    pdsettings.ellipsestroke = $('#ellipsestroke').val();
 	    pdsettings.model = getOption("#evolution-isochron-models");
@@ -2649,10 +2642,10 @@ $(function(){
 		var chronometer = IsoplotR.settings.geochronometer;
 		var plotdevice = IsoplotR.settings.plotdevice;
 		var format = IsoplotR.settings[chronometer].format;
-		IsoplotR.settings[plotdevice] = settings[plotdevice];
-		IsoplotR.settings[chronometer] = settings[chronometer];
+		IsoplotR.settings = settings;
+		IsoplotR.settings.geochronometer = chronometer; // restore
+		IsoplotR.settings.plotdevice = plotdevice;      // restore
 		IsoplotR.settings[chronometer].format = format; // restore
-		IsoplotR.settings.par = settings.par;
 		IsoplotR = populate(IsoplotR,false);
 	    });
 	});
