@@ -81,6 +81,8 @@ $(function(){
             }
         });
         shinylight.initialize();
+        // indicate to the tests that the test can start
+        window.initalisationComplete = true;
     };
 
     function dnc(){
@@ -556,16 +558,16 @@ $(function(){
 	    }
 	    if (set.diseq){
 		$(".show4diseq").show();
-		if (set.U48[1]>0){
+		if (set.U48[2]>0){
 		    $(".show4U48diseq").show();
 		} else {
 		    $(".show4U48diseq").hide();
 		}
-		if (set.ThU[1]==3){
+		if (set.ThU[2]==3){
 		    $(".show4ThUdiseq").show();
 		    $(".show4ThUdiseq12").hide();
 		    $(".show4ThUdiseq3").show();
-		} else if (set.ThU[1]>0){
+		} else if (set.ThU[2]>0){
 		    $(".show4ThUdiseq").show();
 		    $(".show4ThUdiseq12").show();
 		    $(".show4ThUdiseq3").hide();
@@ -574,12 +576,12 @@ $(function(){
 		    $(".show4ThUdiseq12").hide();
 		    $(".show4ThUdiseq3").hide();
 		}
-		if (set.RaU[1]>0){
+		if (set.RaU[2]>0){
 		    $(".show4RaUdiseq").show();
 		} else {
 		    $(".show4RaUdiseq").hide();
 		}
-		if (set.PaU[1]>0){
+		if (set.PaU[2]>0){
 		    $(".show4PaUdiseq").show();
 		} else {
 		    $(".show4PaUdiseq").hide();
@@ -908,19 +910,34 @@ $(function(){
 	    } else {
 		$('.show4tanchor').hide();
 	    }
-	    if (geochronometer=='Th-U' & set.format<3){
-		switch (pd.y0option){
-		case 1:
-		    $('.show4y0option1').show();
-		    break;
+	    if (geochronometer=='U-Pb'){
+		switch (pd.UPb_y0option){
 		case 2:
-		    $('.show4y0option2').show();
+		    $('.show4UPby0option2').show();
+		    $('.hide4UPby0option2').hide();
 		    break;
 		case 3:
-		    $('.show4y0option3').show();
+		    $('.show4UPby0option3').show();
+		    $('.hide4UPby0option3').hide();
 		    break;
 		default:
-		    $('.show4y0option4').show();
+		    $('.show4UPby0option1').show();
+		    $('.hide4UPby0option1').hide();
+		}
+	    }
+	    if (geochronometer=='Th-U' & set.format<3){
+		switch (pd.ThU_y0option){
+		case 1:
+		    $('.show4ThUy0option1').show();
+		    break;
+		case 2:
+		    $('.show4ThUy0option2').show();
+		    break;
+		case 3:
+		    $('.show4ThUy0option3').show();
+		    break;
+		default:
+		    $('.show4ThUy0option4').show();
 		}
 	    }
 	case 'regression':
@@ -951,6 +968,11 @@ $(function(){
 		$('#radial-pch').show();
 	    }
             setBgFillVisibility(pd.bg.option);
+	    if (pd.numpeaks=='min'){
+		$('.show4peakfit_min').show();
+	    } else {
+		$('.show4peakfit_min').hide();
+	    }
 	    break;
 	case 'ages':
 	    switch (pd.showdisc){
@@ -1047,13 +1069,13 @@ $(function(){
 		prop('selected', 'selected');
 	    $('#discoption option[value='+set.discoption+']').
 		prop('selected', 'selected');	    
-	    $('#U48-diseq option[value='+set.U48[1]+']').
+	    $('#U48-diseq option[value='+set.U48[2]+']').
 		prop('selected', 'selected');
-	    $('#ThU-diseq option[value='+set.ThU[1]+']').
+	    $('#ThU-diseq option[value='+set.ThU[2]+']').
 		prop('selected', 'selected');
-	    $('#RaU-diseq option[value='+set.RaU[1]+']').
+	    $('#RaU-diseq option[value='+set.RaU[2]+']').
 		prop('selected', 'selected');
-	    $('#PaU-diseq option[value='+set.PaU[1]+']').
+	    $('#PaU-diseq option[value='+set.PaU[2]+']').
 		prop('selected', 'selected');
 	    $('#diseq').prop('checked',set.diseq);
 	    $('#U238U235').val(cst.iratio.U238U235[0]);
@@ -1090,6 +1112,10 @@ $(function(){
 	    $('#ThU').val(set.ThU[0]);
 	    $('#RaU').val(set.RaU[0]);
 	    $('#PaU').val(set.PaU[0]);
+	    $('#sU48').val(set.U48[1]);
+	    $('#sThU').val(set.ThU[1]);
+	    $('#sRaU').val(set.RaU[1]);
+	    $('#sPaU').val(set.PaU[1]);
 	    break;
 	case 'Th-U':
 	    $('#ThU-formats option[value='+set.format+']').
@@ -1322,12 +1348,15 @@ $(function(){
 	    $('#clabel').val(set.clabel);
 	    $('#ticks').val(set.ticks);
 	    $('#cex').val(IsoplotR.settings.par.cex);
-	    $('#tanchor').val(set.tanchor);
+	    $('#tanchor').val(set.tanchor[0]);
+	    $('#stanchor').val(set.tanchor[1]);
 	    break;
 	case 'isochron':
 	    $('#ThU-isochron-types option[value='+set.ThUtype+']').
 		prop('selected', 'selected');
-	    $('#y0option option[value='+set.y0option+']').
+	    $('#UPb_y0option option[value='+set.UPb_y0option+']').
+		prop('selected', 'selected');
+	    $('#ThU_y0option option[value='+set.ThU_y0option+']').
 		prop('selected', 'selected');
 	    $('#UPb-isochron-types option[value='+set.UPbtype+']').
 		prop('selected', 'selected');
@@ -1336,7 +1365,8 @@ $(function(){
 	    $('#isochron-exterr').prop('checked',set.exterr)
 	    $('#PbPb-growth').prop('checked',set.growth)
 	    $('#joint').prop('checked',set.joint)
-	    $('#tanchor').val(set.tanchor);
+	    $('#tanchor').val(set.tanchor[0]);
+	    $('#stanchor').val(set.tanchor[1]);
 	case 'regression':
 	    $('#shownumbers').prop('checked',set.shownumbers);
 	    $('#isochron-minx').val(set.minx);
@@ -1358,6 +1388,7 @@ $(function(){
 		prop('selected', 'selected');
 	    $('#mixtures option[value='+set.numpeaks+']').
 		prop('selected', 'selected');
+	    $('#np4').prop('checked', set.np4);
 	    $('#shownumbers').prop('checked', set.shownumbers);
 	    $('#pch').val(set.pch);
 	    if (set.shownumbers){ $('#radial-pch').hide(); }
@@ -1420,6 +1451,7 @@ $(function(){
 	    $('#cex').val(IsoplotR.settings.par.cex);
 	    $('#colmap_option option[value="'+set.colmap+'"]').
 		prop('selected', 'selected');
+            copy_background('colmap_option');
 	    break;
 	case 'set-zeta':
 	    $('.show4zeta').show();
@@ -1439,6 +1471,7 @@ $(function(){
 	    break;
 	case 'MDS':
 	    $('#classical').prop('checked',set.classical);
+	    $('#diss').val(set.diss);
 	    $('#shepard').prop('checked',set.shepard);
 	    $('#nnlines').prop('checked',set.nnlines);
 	    $('#pch').val(set.pch);
@@ -1501,10 +1534,10 @@ $(function(){
 	var gcsettings = set[geochronometer];
 	var pdsettings = set[plotdevice];
 	var cst = IsoplotR.constants;
-	set.oerr = getInt("#oerr");
-	cst.alpha = getNumber("#alpha");
 	if (['KDE','CAD','MDS'].indexOf(plotdevice) < 0){
 	    set.sigdig = getNumber("#sigdig");
+	    set.oerr = getInt("#oerr");
+	    cst.alpha = getNumber("#alpha");
 	}
 	switch (geochronometer){
 	case 'U-Pb':
@@ -1522,10 +1555,10 @@ $(function(){
 		gcsettings.type = 4;
 	    }
 	    gcsettings.diseq = truefalse('#diseq');
-	    gcsettings.U48[1] = getOption('#U48-diseq');
-	    gcsettings.ThU[1] = getOption('#ThU-diseq');
-	    gcsettings.RaU[1] = getOption('#RaU-diseq');
-	    gcsettings.PaU[1] = getOption('#PaU-diseq');
+	    gcsettings.U48[2] = getOption('#U48-diseq');
+	    gcsettings.ThU[2] = getOption('#ThU-diseq');
+	    gcsettings.RaU[2] = getOption('#RaU-diseq');
+	    gcsettings.PaU[2] = getOption('#PaU-diseq');
 	    if (gcsettings.format<7 & gcsettings.ThU[1]==3){
 		gcsettings.ThU[1] = 2;
 	    }
@@ -1533,9 +1566,16 @@ $(function(){
 	    gcsettings.ThU[0] = getNumber('#ThU');
 	    gcsettings.RaU[0] = getNumber('#RaU');
 	    gcsettings.PaU[0] = getNumber('#PaU');
+	    gcsettings.U48[1] = getNumber('#sU48');
+	    gcsettings.ThU[1] = getNumber('#sThU');
+	    gcsettings.RaU[1] = getNumber('#sRaU');
+	    gcsettings.PaU[1] = getNumber('#sPaU');
 	    cst.iratio.Pb207Pb206[0] = getNumber('#Pb207Pb206');
 	    cst.iratio.Pb208Pb206[0] = getNumber('#Pb208Pb206');
 	    cst.iratio.Pb208Pb207[0] = getNumber('#Pb208Pb207');
+	    cst.iratio.Pb207Pb206[1] = getNumber('#errPb207Pb206');
+	    cst.iratio.Pb208Pb206[1] = getNumber('#errPb208Pb206');
+	    cst.iratio.Pb208Pb207[1] = getNumber('#errPb208Pb207');
 	    cst.lambda.Th232[0] = getNumber("#LambdaTh232");
 	    cst.lambda.Th232[1] = getNumber("#errLambdaTh232");
 	    cst.lambda.U234[0] = getNumber("#LambdaU234");
@@ -1729,15 +1769,18 @@ $(function(){
 	    pdsettings.clabel = $('#clabel').val();
 	    pdsettings.ticks = $('#ticks').val();
 	    pdsettings.anchor = getOption("#anchor-option")
-	    pdsettings.tanchor = getNumber('#tanchor');
+	    pdsettings.tanchor[0] = getNumber('#tanchor');
+	    pdsettings.tanchor[1] = getNumber('#stanchor');
 	    IsoplotR.settings.par.cex = getNumber('#cex');
 	    break;
 	case 'isochron':
 	    pdsettings.UPbtype = getOption("#UPb-isochron-types");
 	    pdsettings.ThUtype = getOption("#ThU-isochron-types");
-	    pdsettings.y0option = getOption("#y0option");
+	    pdsettings.UPb_y0option = getOption("#UPb_y0option");
+	    pdsettings.ThU_y0option = getOption("#ThU_y0option");
 	    pdsettings.anchor = getOption("#anchor-option")
-	    pdsettings.tanchor = getNumber('#tanchor');
+	    pdsettings.tanchor[0] = getNumber('#tanchor');
+	    pdsettings.tanchor[1] = getNumber('#stanchor');
 	    pdsettings.exterr = truefalse('#isochron-exterr');
 	    pdsettings.growth = truefalse('#PbPb-growth');
 	    pdsettings.joint = truefalse('#joint');
@@ -1764,6 +1807,7 @@ $(function(){
 	    pdsettings.shownumbers = truefalse('#shownumbers');
 	    pdsettings.transformation = getOption("#transformation");
 	    pdsettings.numpeaks = getOption("#mixtures");
+	    pdsettings.np4 = truefalse('#np4');
 	    pdsettings.mint = check($('#mint').val(),'auto');
 	    pdsettings.z0 = check($('#z0').val(),'auto');
 	    pdsettings.maxt = check($('#maxt').val(),'auto');
@@ -1844,6 +1888,7 @@ $(function(){
 	    break;
 	case 'MDS':
 	    pdsettings["classical"] = truefalse('#classical');
+	    pdsettings["diss"] = getOption('#diss');
 	    pdsettings["shepard"] = truefalse('#shepard');
 	    pdsettings["nnlines"] = truefalse('#nnlines');
 	    pdsettings["pch"] = $('#pch').val();
@@ -2661,21 +2706,49 @@ $(function(){
     });
     
     function displayError(message, err) {
-	console.error(message, err);
-	var par = document.createElement("p");
-	par.setAttribute("class", "ploterror"); 
-	par.textContent = err;
-	var myplot = document.getElementById("myplot");
-	myplot.textContent = '';
-	myplot.appendChild(par);
+        console.error(message, err);
+        var elt = $('#error');
+        elt.text(err);
+        elt.show();
+        $('#OUTPUT').hide();
+        $('#myplot').hide();
+        $('#loader').hide();
+    }
+
+    function showProcessingMessage() {
+        var loader = $('#loader');
+        loader.empty();
+        loader.append($('<p class="blink_me">Processing...</p>'));
+        loader.css('background-image', '');
+        loader.css('background-color', 'white');
+        loader.show();
+    }
+
+    function showInfoMessage(text) {
+        var loader = $('#loader');
+        loader.empty();
+        loader.text(text);
+    }
+
+    function showProgress(num, den) {
+        var p = num / den * 100;
+        var bg = (
+            "linear-gradient(to right, #c5e3c5 0%, green "
+            + p + "%, white " + p + "%, #c8d8d8 100%)"
+        );
+        $('#loader').css("background-image", bg);
     }
 
     $("#PLOT").click(function(){
         update();
-        $("#OUTPUT").hide();
+        showProcessingMessage();
         var myplot = $("#myplot");
-        myplot.html("<div id='loader' class='blink_me'>Processing...</div>");
+        myplot.empty();
+        myplot.show();
         var img = document.createElement('IMG');
+        img.style.width = '100%';
+        img.style.height = '100%';
+        myplot.append(img);
         var input = getRcommand(IsoplotR)
         input.data = IsoplotR.data4server;
         var wantSvg = true;
@@ -2683,12 +2756,15 @@ $(function(){
             // for some reason R gives us fatter margins with SVG by default
             input.cex *= 0.75;
         }
-        shinylight.call(input.fn, input, myplot.get(0), {
+        shinylight.call(input.fn, input, img, {
             imgType: wantSvg? 'svg' : 'pdf',
+            info: showInfoMessage,
+            progress: showProgress
         }).then(function(result) {
-            img.setAttribute('src', result.plot[0]);
-            myplot.empty();
-            myplot.append(img);
+            $(loader).hide();
+            $('#error').hide();
+            $('#OUTPUT').hide();
+            myplot.show();
         }).catch(function(error) {
             displayError("Plot failed.", error);
         });
@@ -2696,15 +2772,20 @@ $(function(){
 
     $("#RUN").click(function(){
         update();
-        $("#myplot").empty();
-        var grid = $('#OUTPUT');
-        grid.handsontable('clear');
-        grid.handsontable('deselectCell');
-        grid.handsontable('setDataAtCell',0,0,'Processing...');
-        grid.show();
+        showProcessingMessage();
         var input = getRcommand(IsoplotR)
         input.data = IsoplotR.data4server;
-        shinylight.call(input.fn, input, null, {}).then(function(result) {
+        shinylight.call(input.fn, input, null, {
+            info: showInfoMessage,
+            progress: showProgress
+        }).then(function(result) {
+            $('#myplot').hide();
+            $('#error').hide();
+            $('#loader').hide();
+            var grid = $('#OUTPUT');
+            grid.handsontable('clear');
+            grid.handsontable('deselectCell');
+            grid.show();
             grid.handsontable('populateFromArray', 0, 0,
                 result.data);
             const hot = grid.data('handsontable');
@@ -2712,22 +2793,25 @@ $(function(){
                 colHeaders: result.headers
             });
         }).catch(function(error) {
-            grid.hide();
             displayError("Run failed.", error);
         });
     });
 
     document.getElementById("PDF").onclick = function() {
         update();
+        showProcessingMessage();
         var input = getRcommand(IsoplotR)
         input.data = IsoplotR.data4server;
         shinylight.call(input.fn, input, null, {
             imgType: 'pdf',
+            info: showInfoMessage,
+            progress: showProgress
         }).then(function(result) {
             const downloader = document.createElement("A");
             downloader.setAttribute("download", 'IsoplotR.pdf');
             downloader.setAttribute("href", result.plot[0]);
             downloader.click();
+            $('#loader').hide();
         }).catch(function(error) {
             displayError("Get PDF failed.", error);
         });
@@ -2735,15 +2819,20 @@ $(function(){
 
     document.getElementById("CSV").onclick = function() {
         update();
+        showProcessingMessage();
         let fname = prompt("Please enter a file name", "ages.csv");
         var input = getRcommand(IsoplotR)
         input.data = IsoplotR.data4server;
-        shinylight.call(input.fn, input, null, {}).then(function(result) {
+        shinylight.call(input.fn, input, null, {
+            info: showInfoMessage,
+            progress: showProgress
+        }).then(function(result) {
             const rs = result.data.map(function(cs) { return cs.join(','); });
             const downloader = document.createElement("A");
             downloader.setAttribute("download", fname);
             downloader.setAttribute("href", 'data:text/csv;base64,' + btoa(rs.join('\n')));
             downloader.click();
+            $('#loader').hide();
         }).catch(function(error) {
             displayError("Run failed.", error);
         });
@@ -2762,6 +2851,21 @@ $(function(){
     var dictionary_id_fallback;
     var dictionary_class_fallback;
     var loaded_language = null;
-    const timeout = {};
     initialise();
 });
+
+function copy_background(id) {
+    var select = $('#' + id);
+    var value = select.val();
+    var option = $('#' + id + ' option[value="' + value + '"]');
+    var classes = option.attr('class').split(' ');
+    var prefix = /^background_/;
+    for (var i in classes) {
+        var cls = classes[i];
+        if (cls.match(prefix)) {
+            console.log('adding ' + cls);
+            select.attr('class', cls);
+            return;
+        }
+    }
+}
