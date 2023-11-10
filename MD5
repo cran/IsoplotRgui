@@ -1,6 +1,6 @@
-69bd1506481fe751537752ac1569e619 *DESCRIPTION
+e902df78b3c271048afd6c125fb17ea9 *DESCRIPTION
 192f541f06de69682b3d20cc02100170 *NAMESPACE
-65c823f5c65d57e656b81f362ae3bb3c *R/IsoplotR.R
+0f22c1eb5a63e80306a28a6cba13861e *R/IsoplotR.R
 3bca503328ac620187624c71dafb61da *R/server.R
 fe33eb7bf023a3f05cbe228140dfdf24 *README.md
 5f4c55ebc52c840ead227e9c217a4a33 *build/CRAN.md
@@ -62,7 +62,7 @@ c0ab3a148d6b8af3bb4088d6e1f38a8f *inst/www/home/home.css
 a236d8f2210cee4845d3a110d7cf8e36 *inst/www/home/index.html
 d21065c7127cb822e968cb5a8c8119a8 *inst/www/home/intro.html
 3386e3c7de322639b7bfc1400f6b02a4 *inst/www/home/map.html
-c1f6f4e745aa73be4428b8a3feec7f10 *inst/www/home/news.html
+55372838fd64250b709002edfb60e2db *inst/www/home/news.html
 d053053176cbfac48c2526435e9cbebf *inst/www/home/offline.html
 f549b9b65e3ee1d67fcfe465509929cc *inst/www/home/world.svg
 9df3e35712db1ab86f11bf2d5a85b780 *inst/www/images/InputFormats.png
@@ -83,7 +83,7 @@ cef86897efbd1e18f4e40c896be7b84d *inst/www/images/json_cn.png
 17cb5288b0a48a8079cb7c0874da6860 *inst/www/images/json_en.png
 95cd1794338f9134d489d5bbc1c122a0 *inst/www/images/myfavicon.ico
 2ac09f897304bea4aab14ab2511c4d86 *inst/www/index.html
-27f4d4136fbae90b9a474179a1b4aec7 *inst/www/js/IsoplotR.js
+9ea8132e6b9562abfa1901f532ef7113 *inst/www/js/IsoplotR.js
 dda1a25afde2c6d273de8db3a58c1768 *inst/www/js/bootstrap-filestyle.min.js
 0327924e6e01896c9544927241cd37a3 *inst/www/js/constants.json
 4e58f373e179cc418a66871832b04b98 *inst/www/js/data.json
@@ -94,12 +94,12 @@ e06ac8f6dd03ebecf7e8ac64aa14496b *inst/www/js/handsontable.min.js
 9c7db0a91d7142c12a42b5631e0671bd *inst/www/js/js2R.js
 f24b80916bcb6371bf282f936b8ee6ae *inst/www/js/languages.json
 46c7fd1c1b62b35482dd080975117750 *inst/www/js/run_prettify.js
-a50af45b496c6de226fcea7b341a3f07 *inst/www/js/settings.json
+3020c336c48f7dd7c8c21bce1dbbe7cd *inst/www/js/settings.json
 81fc015fffc19bc20cc0a5324a6be072 *inst/www/js/toolbox.js
-10b953ef7e78ea4aede7a879468aa326 *inst/www/locales/en/contextual_help.json
+efec9302797d31e050e6ec6c4c61fb71 *inst/www/locales/en/contextual_help.json
 2e8ddfcb369adf090bccdba318e3fa4a *inst/www/locales/en/dictionary_class.json
-93201077d2891ed6d5ce76ffbb9328f4 *inst/www/locales/en/dictionary_id.json
-5b9f13f7c53426d12d1b60d9ff75e12e *inst/www/locales/en/home_id.json
+3ceff3848d766eb8e8f59ca9a141308d *inst/www/locales/en/dictionary_id.json
+7e7f79fb7565edc8866271e5960e7b16 *inst/www/locales/en/home_id.json
 409a606104dff14abf9d029f45da6933 *inst/www/locales/es/contextual_help.json
 4747473e6672d9911149a7d28cec8631 *inst/www/locales/es/dictionary_class.json
 bd04e295357f01b6ed35692e88c81c10 *inst/www/locales/es/dictionary_id.json
@@ -111,7 +111,7 @@ d779fbc2eca94ffd276ef97c9fd5d0b5 *inst/www/locales/zh_Hans/dictionary_id.json
 8e80452bcbdddf7fd1736e65c35fdcf2 *inst/www/options/Ar-Ar.html
 25d92fd793ace37894021729c0d4d607 *inst/www/options/CAD.html
 4ee64e283b6fc72a765c2e238f0df0f5 *inst/www/options/K-Ca.html
-0718d082c8b6ebe338b7470bd5744a22 *inst/www/options/KDE.html
+8c21954d8b8420afec2f69dc11ced5f7 *inst/www/options/KDE.html
 20acd8000ea3774c48e0ab8042770ea6 *inst/www/options/Lu-Hf.html
 0859f67cc146ed27ae95a0215879545e *inst/www/options/MDS.html
 a9b328d5ee1635bc90a8f935ef15cb2b *inst/www/options/Pb-Pb.html
@@ -137,7 +137,7 @@ aec0827b482e882969c85b0f3ece528f *inst/www/options/index.html
 ce46eabd7209695f7d1397fe07c40d56 *inst/www/options/set-zeta.html
 c971f3ab97060b3e0ab2b91bc5b7e03b *inst/www/options/spectrum.html
 5bfb1ceb2c0fde79796f31c3d2323ba4 *inst/www/tutorial.html
-ad9995c0d305d650bc1a138f32113af7 *inst/www/version.txt
+0ebe1a34e990772a2bad83ce076e0766 *inst/www/version.txt
 8495b4493a4708e9f08f8209df3f73ae *inst/www/welcome.html
 d4a09605bb9ff62306f0dbeed53d8240 *man/IsoplotR.Rd
 0fd9abedfcd2f64a1d41963b1c218b42 *man/daemon.Rd
