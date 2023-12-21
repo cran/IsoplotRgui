@@ -1,19 +1,19 @@
 selection2levels <- function(dat, nc) {
     values <- matrix(dat, ncol = nc)
-    lc <- nc - 1
+    lc <- nc - 2
     as.numeric(values[, lc])
 }
 
 omitter <- function(dat, nc, flags = c("x", "X")) {
     values <- matrix(dat, ncol = nc)
-    oc <- nc
+    oc <- nc - 1
     o <- values[, oc]
     which(o %in% flags)
 }
 
 settingsiratio <- list(
     "U-Pb" = c("U238U235", "Pb207Pb206", "Pb206Pb204",
-               "Pb207Pb204", "Pb208Pb206", "Pb208Pb207"),
+               "Pb207Pb204", "Pb207Pb208", "Pb207Pb208"),
     "Pb-Pb" = c("U238U235", "Pb206Pb204", "Pb207Pb204"),
     "Th-U" = c(),
     "Ar-Ar" = c("Ar40Ar36"),
@@ -192,11 +192,7 @@ concordia <- function(fn, params, data, s2d, settings, cex) {
     args$xlim <- getlimits(pd$minx, pd$maxx)
     args$ylim <- getlimits(pd$miny, pd$maxy)
     args$ticks <- str2vec(pd$ticks)
-    if (pd$anchor == 1) {
-        args$anchor <- 1
-    } else if (pd$anchor == 2) {
-        args$anchor <- c(2, pd$tanchor)
-    }
+    args$anchor <- pd$anchor
     graphics::par(cex = cex, mgp = c(2.5,1,0))
     calculate(IsoplotR::concordia, args)
 }
@@ -305,7 +301,9 @@ setregression <- function(params, data, s2d, settings) {
         ellipse.fill = params$ellipsefill,
         ellipse.stroke = pd$ellipsestroke,
         model = pd$model,
-        clabel = pd$clabel
+        wtype = pd$wtype,
+        clabel = pd$clabel,
+        anchor = pd$anchor
     )
     args$xlim <- getlimits(pd$minx, pd$maxx)
     args$ylim <- getlimits(pd$miny, pd$maxy)
@@ -322,31 +320,26 @@ isochron <- function(fn, params, data, s2d, settings, cex) {
     args <- setregression(params, data, s2d, settings)
     applysettings(params, settings)
     gc <- params$geochronometer
+    pd <- params$pdsettings
     if (!(gc %in% c("U-Pb", "Th-U", "U-Th-He"))) {
         args$inverse <- params$gcsettings$inverse
     }
     if (gc == "Pb-Pb") {
-        args$growth <- params$pdsettings$growth
+        args$growth <- pd$growth
     }
     if (gc == "U-Pb") {
-        args$type <- params$pdsettings$UPbtype;
+        args$type <- pd$UPbtype;
         if (params$gcsettings$format > 3) {
-            args$joint <- params$pdsettings$joint
+            args$joint <- pd$joint
         }
-        anchor <- params$pdsettings$anchor
-        if (anchor == 1) {
-            args$anchor <- 1
-        } else if (anchor == 2) {
-            args$anchor <- c(2, params$pdsettings$tanchor)
-        }
-        args$y0option <- params$pdsettings$UPb_y0option
+        args$y0option <- pd$UPb_y0option
     }
     if (gc == "Th-U") {
-        args$type <- params$pdsettings$ThUtype
-        args$y0option <- params$pdsettings$ThU_y0option
+        args$type <- pd$ThUtype
+        args$y0option <- pd$ThU_y0option
     }
     if (gc != "U-Th-He") {
-        args$exterr <- params$pdsettings$exterr
+        args$exterr <- pd$exterr
     }
     graphics::par(cex = cex, mgp = c(2.5,1,0))
     calculate(IsoplotR::isochron, args)
@@ -378,9 +371,7 @@ weightedmean <- function(fn, params, data, s2d, settings, cex) {
     args$from <- notauto(pd$mint)
     args$to <- notauto(pd$maxt)
     gc <- params$geochronometer
-    if (gc %in% c(
-        "Ar-Ar", "Th-Pb", "K-Ca", "Rb-Sr", "Sm-Nd", "Re-Os", "Lu-HF"
-    )) {
+    if (gc %in% c("Ar-Ar", "Th-Pb", "K-Ca", "Rb-Sr", "Sm-Nd", "Re-Os", "Lu-Hf")) {
         args$i2i <- params$gcsettings$i2i
     }
     if (gc == "U-Pb") {
