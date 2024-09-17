@@ -1,4 +1,4 @@
-254d21948a7ccfa715c12544a6a4ece8 *DESCRIPTION
+63b6c2a0fa02b670d958b2426fd86020 *DESCRIPTION
 192f541f06de69682b3d20cc02100170 *NAMESPACE
 46b622702754f5618e4d7090afc6de02 *R/IsoplotR.R
 93dd6b5018f607fc91873282c6a80a3c *R/server.R
@@ -61,7 +61,7 @@ c0ab3a148d6b8af3bb4088d6e1f38a8f *inst/www/home/home.css
 a236d8f2210cee4845d3a110d7cf8e36 *inst/www/home/index.html
 d21065c7127cb822e968cb5a8c8119a8 *inst/www/home/intro.html
 6b72b109ef2a23e2bb74af4c45a39c62 *inst/www/home/map.html
-d4525128d81d210732b14ff3ba78db77 *inst/www/home/news.html
+d8b8661681bd55001e740e03596306fa *inst/www/home/news.html
 d053053176cbfac48c2526435e9cbebf *inst/www/home/offline.html
 bf576fcf41d5481b722f1f043a14cd4b *inst/www/home/world.svg
 9df3e35712db1ab86f11bf2d5a85b780 *inst/www/images/InputFormats.png
@@ -97,7 +97,7 @@ f24b80916bcb6371bf282f936b8ee6ae *inst/www/js/languages.json
 a4aa672dc7bddd36d2029e11301d628e *inst/www/locales/en/contextual_help.json
 6d7ff4b4c34d9f502f2cd125f796ed89 *inst/www/locales/en/dictionary_class.json
 1e97cb29d4775b8c1d4e9467bb45b09e *inst/www/locales/en/dictionary_id.json
-42c9acfd452405c9722fa1e9c0fed8dd *inst/www/locales/en/home_id.json
+f29d7e037ef5b86b059fc34ea51f82d7 *inst/www/locales/en/home_id.json
 409a606104dff14abf9d029f45da6933 *inst/www/locales/es/contextual_help.json
 4747473e6672d9911149a7d28cec8631 *inst/www/locales/es/dictionary_class.json
 f7a54ffc0dfd9eebd5992c84c5a82b1a *inst/www/locales/es/dictionary_id.json
@@ -135,7 +135,7 @@ a242dc081619918d58b043205bf055ee *inst/www/options/radial.html
 ce46eabd7209695f7d1397fe07c40d56 *inst/www/options/set-zeta.html
 c971f3ab97060b3e0ab2b91bc5b7e03b *inst/www/options/spectrum.html
 5bfb1ceb2c0fde79796f31c3d2323ba4 *inst/www/tutorial.html
-7a22247de8db3271f3bf8573be10e986 *inst/www/version.txt
+b83f79ee4c56df548cbba7f349d0a40b *inst/www/version.txt
 8495b4493a4708e9f08f8209df3f73ae *inst/www/welcome.html
 d4a09605bb9ff62306f0dbeed53d8240 *man/IsoplotR.Rd
 0fd9abedfcd2f64a1d41963b1c218b42 *man/daemon.Rd
